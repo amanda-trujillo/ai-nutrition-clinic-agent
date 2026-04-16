@@ -33,7 +33,7 @@ A IA é capaz de:
 
 ## Fluxo
 
-![Fluxo do projeto](./images/fluxo.png)
+![Fluxo do projeto](./fluxo.png)
 
 ## Como usar
 
