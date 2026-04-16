@@ -10,13 +10,13 @@ Agente de Inteligência Artificial para atendimento automatizado em clínicas de
 
 ## Sobre o projeto
 
-Este projeto consiste em um fluxo de atendimento construído no n8n utilizando modelos de linguagem (LLMs) para simular um assistente virtual capaz de conduzir conversas com pacientes.
+Este projeto consiste em um fluxo de atendimento construído no n8n utilizando modelos de linguagem (LLMs) para representar um assistente virtual capaz de conduzir conversas com pacientes.
 
 A IA é capaz de:
 - Identificar a intenção do usuário (valor, agendamento)
 - Conduzir o fluxo de atendimento
 - Manter o contexto da conversa
-- Simular um processo de agendamento
+- Estruturar um processo de agendamento
 
 ## Funcionalidades
 
@@ -46,9 +46,22 @@ A IA é capaz de:
 
 GET /webhook?mensagem=quero%20agendar
 
+## Exemplo de conversa
+
+Usuário: Quero saber o valor da consulta  
+IA: Nossa consulta tem o valor de R$180 e inclui avaliação completa, plano alimentar personalizado e acompanhamento inicial.
+
+Usuário: Quero agendar  
+IA: Perfeito! Você prefere consulta online ou presencial?
+
+Usuário: Online  
+IA: Ótimo! Tenho horários disponíveis na terça às 14h ou quinta às 10h. Qual prefere?
+
 ## Diferenciais
 
 - Uso de LLM para classificação de intenção
 - Arquitetura baseada em automação (n8n)
 - Simulação de fluxo real de atendimento
 - Estrutura pronta para integração com WhatsApp/API
+
+Esse tipo de solução pode ser aplicado para reduzir carga operacional de atendimento e melhorar a conversão de novos pacientes.
