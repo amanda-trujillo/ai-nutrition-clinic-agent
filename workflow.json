@@ -1,0 +1,556 @@
+{
+  "name": "IA Clínica Nutrição - Atendimento",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "atendimento-nutricao",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f51d9953-b97e-42b2-8135-74aaded33d60",
+      "name": "Webhook",
+      "webhookId": "e5051753-b7d0-4ffd-a76e-fa24a70936cf"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8b89e02d-b79c-4419-b882-944de91fb177",
+              "name": "mensagem",
+              "value": "={{$json[\"query\"][\"mensagem\"]}}",
+              "type": "string"
+            },
+            {
+              "id": "d6588912-8ebb-4b5c-b62c-2583a0139afb",
+              "name": "etapa",
+              "value": "={{$json[\"query\"][\"etapa\"]}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "0c9b5c2c-7a08-4c58-b77c-da7eb5030c12",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{$json[\"mensagem\"]}}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Você é um classificador de intenção de uma clínica de nutrição.\n\nAnalise a mensagem do usuário e responda apenas com uma destas 5 opções:\n\nvalor\nagendamento\nonline\npresencial\noutro\n\nRegras:\n- Responda somente com uma palavra\n- Não explique\n- Não escreva frases\n- Se a mensagem for sobre preço, valor ou consulta, responda \"valor\"\n- Se a mensagem for sobre marcar, agendar ou reservar consulta, responda \"agendamento\"\n- Se a mensagem indicar modalidade online, responda \"online\"\n- Se a mensagem indicar modalidade presencial, responda \"presencial\"\n- Se não se encaixar em nenhum caso, responda \"outro\"\n\nMensagem do usuário: {{$json[\"mensagem\"]}}"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        384,
+        0
+      ],
+      "id": "2307740b-3381-491c-80b6-a20608b93b55",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "d8f756f7-a927-4200-9750-b366ccfdc2fa",
+                    "leftValue": "={{$json[\"etapa\"]}}",
+                    "rightValue": "aguardando_modalidade",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$json[\"text\"]}}",
+                    "rightValue": "valor",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "6bd293c3-97a7-40c6-8e30-894d3af97326"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "e4a27e96-f8cd-46c6-852e-7fbc09f9dd2e",
+                    "leftValue": "={{$json[\"text\"]}}",
+                    "rightValue": "agendamento",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "0135715c-3b6f-4482-ad30-b13d6995809b",
+                    "leftValue": "={{$json[\"text\"]}}",
+                    "rightValue": "online",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "30f8150e-29de-40db-b130-60451026e22b",
+                    "leftValue": "={{$json[\"text\"]}}",
+                    "rightValue": "presencial",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        704,
+        0
+      ],
+      "id": "b6f91e62-8c8a-46df-b604-57b760ec617f",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "55940e45-791a-4a94-8a0b-48b31d1800cb",
+              "name": "resposta",
+              "value": "Claro! 😊  Nossa consulta nutricional tem o valor de R$ 180,00.  Ela inclui: - Avaliação completa do seu perfil - Plano alimentar personalizado - Orientações nutricionais - Acompanhamento inicial  Se quiser, posso te ajudar a agendar! É online ou presencial?",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        880,
+        -288
+      ],
+      "id": "f9a213f1-600d-4726-8b72-3faadb70f700",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "49c32c13-93ad-4c54-a5f4-5f9f99c4d2a3",
+              "name": "resposta",
+              "value": "Perfeito! Você prefere consulta online ou presencial?",
+              "type": "string"
+            },
+            {
+              "id": "e2b4a4f5-19e5-4fd3-8e1e-f89de3ec6167",
+              "name": "etapa",
+              "value": "aguardando_modalidade",
+              "type": "string"
+            },
+            {
+              "id": "be26c9e5-3a6e-4313-b8e5-17dd679befdc",
+              "name": "mensagem",
+              "value": "online",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        944,
+        -112
+      ],
+      "id": "75820b52-7b79-4ec0-b8e7-c22c48771c97",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        448,
+        208
+      ],
+      "id": "1ef92da3-568e-4a04-828d-488ab7c4f1e8",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "o7KT0z2PkNaCDRtU",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "966b6bf4-6628-4ee9-875b-4b1733e8b5bb",
+              "name": "resposta",
+              "value": "Perfeito! Para consulta online, tenho estes horários disponíveis:  - terça às 10h - quarta às 14h - sexta às 9h  Qual você prefere?",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        992,
+        112
+      ],
+      "id": "f3d46c4b-1c1d-4b2c-b6d5-41eae74e020b",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "101f5f33-7562-466a-ab3a-18f0ce3f2482",
+              "name": "resposta",
+              "value": "Perfeito! Para consulta presencial, tenho estes horários disponíveis:  - segunda às 9h - quinta às 15h - sábado às 10h  Qual você prefere?",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        992,
+        352
+      ],
+      "id": "a9fcc02d-3d4c-4e26-bb93-cd869ce4aa33",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1136,
+        -288
+      ],
+      "id": "504e3c30-6714-4657-8423-7e6643521736",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1232,
+        128
+      ],
+      "id": "6061ab61-4d23-4277-972e-0a7da0114e88",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1216,
+        352
+      ],
+      "id": "afa59246-eae0-49a5-9fd1-73f9e10a02dd",
+      "name": "Respond to Webhook2"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1264,
+        -96
+      ],
+      "id": "a59568da-61e2-4e31-bf8e-21bc9bb32ecb",
+      "name": "Respond to Webhook3"
+    }
+  ],
+  "pinData": {
+    "Edit Fields2": [
+      {
+        "json": {
+          "resposta": "Perfeito! Você prefere consulta online ou presencial?",
+          "etapa": "aguardando_modalidade",
+          "mensagem": "online"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook2": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "6a420471-9feb-482c-824b-1497a5fff6e4",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4adfc867a3a55dbcc6ff84a4b94657c388ff072a40e8ccbb45325d4b51c9dee6"
+  },
+  "id": "ttAoPVz96Z25wi9F",
+  "tags": []
+}
